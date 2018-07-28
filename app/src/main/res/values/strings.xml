@@ -4,4 +4,13 @@
     <string name="title_activity_fullscreen">FullscreenActivity</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="options">Options</string>
+    <string name="_1_6">1-6</string>
+    <string name="_7_12">7-12</string>
+    <string name="_13_18">13-18</string>
+    <string name="_19_24">19-24</string>
+    <string name="_25_30">25-30</string>
+    <string name="user_name">Tony Green</string>
+    <string name="mail">talentedyuan@gmail.com</string>
+    <string name="select">在下方选择关卡</string>
 </resources>

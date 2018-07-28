@@ -12,7 +12,10 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 
 
+import com.example.astronaut.brain_dots.Activities.GameViewActivity;
 import com.example.astronaut.brain_dots.Activities.MainActivity;
+import com.example.astronaut.brain_dots.Domain.Creator;
+import com.example.astronaut.brain_dots.Shapes.common.Ball;
 import com.example.astronaut.brain_dots.Shapes.rules.RigidBodyShapes;
 import com.example.astronaut.brain_dots.Utils.ColorUtil;
 import com.example.astronaut.brain_dots.Utils.Constant;
@@ -41,13 +44,13 @@ public class ShowGameSurfaceView extends GLSurfaceView implements SurfaceHolder.
     private List<DrawPath> drawPathList;
 
     //主Activity
-    public MainActivity activity;
+    public GameViewActivity activity;
     //画笔
     Paint paint;
     //刷帧线程
     RefreshFrame refreshThread;
 
-    public ShowGameSurfaceView(MainActivity activity) {
+    public ShowGameSurfaceView(GameViewActivity activity) {
         super(activity);
         this.activity = activity;
         //设置生命周期回调接口的实现者
@@ -75,7 +78,7 @@ public class ShowGameSurfaceView extends GLSurfaceView implements SurfaceHolder.
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        drawBackground(canvas);
+//        drawBackground(canvas);
         if (drawPathList != null && !drawPathList.isEmpty()) {
             for (DrawPath drawPath : drawPathList) {
                 if (drawPath.path != null) {
@@ -92,7 +95,7 @@ public class ShowGameSurfaceView extends GLSurfaceView implements SurfaceHolder.
         } else {
             //背景
             canvas.drawARGB(255, 255, 255, 255);
-            for (RigidBodyShapes shapes : activity.getShapesList()) {
+            for (RigidBodyShapes shapes : activity.shapesList) {
                 shapes.drawBodySelf(canvas, paint);
             }
 
@@ -144,6 +147,9 @@ public class ShowGameSurfaceView extends GLSurfaceView implements SurfaceHolder.
 //                currtY = downY;
                 downX = event.getX();
                 downY = event.getY();
+                Ball ball = Creator.createTouchBall(event.getX(),event.getY(),
+                        15f,false,activity.world,ColorUtil.getCreateBodyColor());
+                activity.shapesList.add(ball);
                 break;
             case MotionEvent.ACTION_MOVE:
 //                float moveX = event.getX();

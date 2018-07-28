@@ -21,4 +21,16 @@ public class ColorUtil {
     public static int getRed() {
         return Color.RED;
     }
+    public static int getBlueBallColor(){
+        return Color.parseColor("#40c0ef");
+    }
+    public static int getRedBallColor(){
+        return Color.parseColor("#ec7db1");
+    }
+    public static int getStaticBodyColor(){
+        return Color.parseColor("#959595");
+    }
+    public static int getCreateBodyColor(){
+        return Color.parseColor("#797878");
+    }
 }

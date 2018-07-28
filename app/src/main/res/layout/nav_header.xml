@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="180dp"
+    android:padding="10dp"
+    android:background="#58c5c7"
+    >
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/user_icon"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_centerInParent="true"
+        android:src="@drawable/strawberry"
+        />
+    <TextView
+        android:id="@+id/user_name"
+        android:textColor="@color/black_overlay"
+        android:text="@string/user_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        />
+    <TextView
+        android:textColor="@color/black_overlay"
+        android:id="@+id/mail"
+        android:textSize="14sp"
+        android:text="@string/mail"
+        android:layout_below="@+id/user_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <LinearLayout
+        android:layout_alignBottom="@+id/user_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:text="@string/select"
+            />
+    </LinearLayout>
+</RelativeLayout>

@@ -12,13 +12,12 @@ import com.example.astronaut.brain_dots.Shapes.rules.RigidBodyShapes
 import com.example.astronaut.brain_dots.Shapes.special.WeldJointWithTwoBody
 import com.example.astronaut.brain_dots.Utils.ColorUtil
 import com.example.astronaut.brain_dots.Utils.Constant
-import com.example.astronaut.brain_dots.Utils.ReadFilesUtil
-import com.example.astronaut.brain_dots.View.show.ShowGameSurfaceView
 import org.jbox2d.common.Vec2
 import org.jbox2d.dynamics.World
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
+    private val startActivity = "START_GAME"
     //创建一个世界
     var world: World? = null
     //存放绘制物体的集合
@@ -28,7 +27,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         //全屏
         requestWindowFeature(Window.FEATURE_NO_TITLE)
-        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN)
+        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
         //横屏
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
         //获取尺寸
@@ -44,7 +43,7 @@ class MainActivity : AppCompatActivity() {
         //屏幕自适应
         Constant.ScaleSR()
 
-        Log.e("Tag!!","Width:" +  Constant.SCREEN_WIDTH + "Height:" + Constant.SCREEN_HEIGHT)
+        Log.e("Tag!!", "Width:" + Constant.SCREEN_WIDTH + "Height:" + Constant.SCREEN_HEIGHT)
         /**
          * 创建一 个物理世界对象，必须要给出其重力向量（若没有重力可以给 0 值）。
          *
@@ -69,7 +68,7 @@ class MainActivity : AppCompatActivity() {
 //        blueBall.rigidBody.linearVelocity = Vec2(0f, 60f)
 
         //底板
-        val rectangle = Creator.createRectangle(300f, (Constant.SCREEN_WIDTH)* 0.1f, 300f, 20f, true,
+        val rectangle = Creator.createRectangle(300f, (Constant.SCREEN_WIDTH) * 0.1f, 300f, 20f, true,
                 world, ColorUtil.getGray())
         shapesList.add(rectangle)
 
@@ -90,14 +89,12 @@ class MainActivity : AppCompatActivity() {
         shapesList.add(rectangle2)
         shapesList.add(rectangle3)
 
-        val fileName = "Level/level1.map"
-        val text = ReadFilesUtil.getContentByAsset(this, fileName)
-        Log.d("text——————>", text)
 
-
+        val fileName = "Level/level2.map"
+//        val list = ReadMapData.getMapElement(this, fileName)
 
         //创建游戏面板
-        val gameView = ShowGameSurfaceView(this)
-        setContentView(gameView)
+//        val gameView = ShowGameSurfaceView(this)
+//        setContentView(gameView)
     }
 }

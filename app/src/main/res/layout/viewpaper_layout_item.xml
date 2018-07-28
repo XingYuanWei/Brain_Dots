@@ -8,54 +8,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/pager_recyclerView_item"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <ImageView
-            android:id="@+id/viewPaper_image1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="#009999"
-            android:scaleType="centerCrop" />
-
-        <ImageView
-            android:id="@+id/viewPaper_image2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="#009999"
-            android:scaleType="centerCrop" />
-
-        <ImageView
-            android:id="@+id/viewPaper_image3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="#009999"
-            android:scaleType="centerCrop" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="#009999"
-        android:orientation="horizontal"
-        android:scaleType="centerCrop">
-
-        <ImageView
-            android:id="@+id/viewPaper_image4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="#009999"
-            android:scaleType="centerCrop" />
-
-
-        <ImageView
-            android:id="@+id/viewPaper_image5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <ImageView
-            android:id="@+id/viewPaper_image6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="#009999"
-            android:scaleType="centerCrop" />
+        </android.support.v7.widget.RecyclerView>
     </LinearLayout>
 </LinearLayout>

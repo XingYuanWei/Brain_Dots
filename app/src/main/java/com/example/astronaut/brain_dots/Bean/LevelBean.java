@@ -1,59 +1,45 @@
 package com.example.astronaut.brain_dots.Bean;
 
 /*
- *Created by 魏兴源 on 2018-07-22
- *Time at 15:05
+ *Created by 魏兴源 on 2018-07-26
+ *Time at 22:26
  *
  */
 
-import org.litepal.crud.DataSupport;
-
 import java.io.Serializable;
 
-public class LevelBean extends DataSupport implements Serializable{
-    private String[] obstaclesName;
-    private String posX_ratio;
-    private String poxY_ratio;
-    private String height_ratio;
-    private String width_ratio;
+public class LevelBean implements Serializable{
+    private String levelID;
+    private int levelImage;
+    private String levelName;
 
-    public String[] getObstaclesName() {
-        return obstaclesName;
+    public LevelBean(String levelID, int levelImage, String levelName) {
+        this.levelID = levelID;
+        this.levelImage = levelImage;
+        this.levelName = levelName;
     }
 
-    public void setObstaclesName(String[] obstaclesName) {
-        this.obstaclesName = obstaclesName;
+    public String getLevelID() {
+        return levelID;
     }
 
-    public String getPosX_ratio() {
-        return posX_ratio;
+    public void setLevelID(String levelID) {
+        this.levelID = levelID;
     }
 
-    public void setPosX_ratio(String posX_ratio) {
-        this.posX_ratio = posX_ratio;
+    public int getLevelImage() {
+        return levelImage;
     }
 
-    public String getPoxY_ratio() {
-        return poxY_ratio;
+    public void setLevelImage(int levelImage) {
+        this.levelImage = levelImage;
     }
 
-    public void setPoxY_ratio(String poxY_ratio) {
-        this.poxY_ratio = poxY_ratio;
+    public String getLevelName() {
+        return levelName;
     }
 
-    public String getHeight_ratio() {
-        return height_ratio;
-    }
-
-    public void setHeight_ratio(String height_ratio) {
-        this.height_ratio = height_ratio;
-    }
-
-    public String getWidth_ratio() {
-        return width_ratio;
-    }
-
-    public void setWidth_ratio(String width_ratio) {
-        this.width_ratio = width_ratio;
+    public void setLevelName(String levelName) {
+        this.levelName = levelName;
     }
 }

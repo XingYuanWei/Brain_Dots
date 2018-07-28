@@ -173,6 +173,33 @@ public class Creator {
         return new Ball(rigidBody, radius, color);
     }
 
+    public static Ball createTouchBall(float x, float y, float radius, boolean isStatic, World world, int color) {
+        BodyDef bodyDef = new BodyDef();
+        //球一定是运动的
+        bodyDef.type = isStatic ? BodyType.STATIC : BodyType.DYNAMIC;
+        bodyDef.position.set(x / Constant.RATE, y / Constant.RATE);
+        //在"世界"中创建刚体
+        Body rigidBody = world.createBody(bodyDef);
+        //创建刚体形状
+        CircleShape circle = new CircleShape();
+        //获取物理世界圆的半径
+        circle.m_radius = radius / Constant.RATE;
+        //刚体的物理性质描述
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.density = 10.0f;
+        fixtureDef.friction = 0.1f;
+        fixtureDef.restitution = 0.1f;
+        fixtureDef.shape = circle;
+        rigidBody.createFixture(fixtureDef);
+        return new Ball(rigidBody, radius, color);
+    }
+
+    /**
+     * 创建多边形
+     *
+     * */
+
+
     /**
      * 创建线段
      */
