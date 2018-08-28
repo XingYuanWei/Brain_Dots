@@ -5,7 +5,9 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 
+import com.example.astronaut.brain_dots.Shapes.rules.RigidBody;
 import com.example.astronaut.brain_dots.Shapes.rules.RigidBodyShapes;
+import com.example.astronaut.brain_dots.Utils.Constant;
 import com.example.astronaut.brain_dots.View.show.DrawPath;
 
 import org.jbox2d.dynamics.Body;
@@ -60,5 +62,18 @@ public class Line extends RigidBodyShapes {
         canvas.drawLine(x - length, y, x + length, y, paint);
 
 //        canvas.drawLine(500,400,900,400,paint);
+    }
+
+    @Override
+    public boolean destroySelf(List list, RigidBody body) {
+        float x = rigidBody.getPosition().x * Constant.RATE;
+        float y = rigidBody.getPosition().y * Constant.RATE;
+        if (x > Constant.SCREEN_HEIGHT && y > Constant.SCREEN_WIDTH){
+            if (!list.isEmpty()){
+                list.remove(body);
+                return true;
+            }
+        }
+        return false;
     }
 }

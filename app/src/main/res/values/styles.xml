@@ -6,6 +6,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowContentTransitions">true</item>
     </style>
 
     <style name="NoTitleTheme" parent="Theme.AppCompat.Light.NoActionBar">
@@ -13,6 +14,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowContentTransitions">true</item>
     </style>
 
     <style name="FullscreenTheme" parent="AppTheme">
@@ -21,16 +23,19 @@
         <item name="android:windowBackground">@null</item>
         <item name="metaButtonBarStyle">?android:attr/buttonBarStyle</item>
         <item name="metaButtonBarButtonStyle">?android:attr/buttonBarButtonStyle</item>
+        <item name="android:windowContentTransitions">true</item>
     </style>
 
     <style name="AppTheme.FullScreen">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentTransitions">true</item>
     </style>
 
     <style name="FullscreenActionBarStyle" parent="Widget.AppCompat.ActionBar">
         <item name="android:background">@color/black_overlay</item>
+        <item name="android:windowContentTransitions">true</item>
     </style>
 
 </resources>

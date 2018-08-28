@@ -31,6 +31,8 @@ import android.view.WindowManager;
 import com.example.astronaut.brain_dots.Bean.LevelBean;
 import com.example.astronaut.brain_dots.Domain.LevelSelectRecyclerViewAdapter;
 import com.example.astronaut.brain_dots.R;
+import com.example.astronaut.brain_dots.Utils.gameUtils.BackgroundMusicUtil;
+import com.example.astronaut.brain_dots.View.show.SettingDialog;
 ;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -68,7 +70,9 @@ public class LevelChoiceActivity extends AppCompatActivity {
         /**
          *  标题设置以及左侧滑动菜单
          * */
-
+        BackgroundMusicUtil.initSound(this);
+        //播放背景音乐
+        BackgroundMusicUtil.playBackGroundMusic(true);
         //设置Material Design的标题栏
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -80,8 +84,8 @@ public class LevelChoiceActivity extends AppCompatActivity {
         if (actionBar != null) {
             //HomeAsUp控件
             actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setHomeAsUpIndicator(R.drawable.brain_dots2);
-//            actionBar.setIcon(R.drawable.brain_dots);
+            actionBar.setIcon(R.drawable.brain_dots);
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_home);
         }
 
         //对伸缩导航条点击事件的处理
@@ -108,8 +112,22 @@ public class LevelChoiceActivity extends AppCompatActivity {
         initList();
         adapter = new LevelSelectRecyclerViewAdapter(levelSelectList);
         recyclerView.setAdapter(adapter);
+    }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        //退出或暂停界面时 音乐也暂停
+        BackgroundMusicUtil.playBackGroundMusic(false);
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //如果此时背景音乐被打开 则重新打开界面的时候背景音乐也打开
+        if (SettingDialog.soundFlag) {
+            BackgroundMusicUtil.playBackGroundMusic(true);
+        }
     }
 
     //显示标题中一些项目
@@ -125,13 +143,21 @@ public class LevelChoiceActivity extends AppCompatActivity {
             case android.R.id.home:
                 drawerLayout.openDrawer(GravityCompat.START);
                 break;
+            case R.id.options:
+                break;
+            case R.id.setting:
+                //弹出设置对话框
+                SettingDialog dialog = new SettingDialog(this);
+                dialog.show();
+                break;
         }
         return true;
     }
 
     //初始化集合
-    private void initList(){
+    private void initList() {
         levelSelectList.clear();
         levelSelectList.addAll(Arrays.asList(levels));
     }
+
 }

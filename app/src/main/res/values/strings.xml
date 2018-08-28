@@ -13,4 +13,11 @@
     <string name="user_name">Tony Green</string>
     <string name="mail">talentedyuan@gmail.com</string>
     <string name="select">在下方选择关卡</string>
+    <string name="setting">setting</string>
+    <string name="setting_str">设置</string>
+    <string name="soundOff">声音开关</string>
+    <string name="off">OFF</string>
+    <string name="on">On</string>
+    <string name="soundOn">声音开关</string>
+    <string name="soundEffect">音效开关</string>
 </resources>

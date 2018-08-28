@@ -6,12 +6,15 @@ package com.example.astronaut.brain_dots.Domain;
  *
  */
 
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.transition.Explode;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -74,7 +77,8 @@ public class LevelSelectRecyclerViewAdapter extends RecyclerView.Adapter<LevelSe
                 Bundle data = new Bundle();
                 data.putSerializable("levelData", level);
                 intent.putExtras(data);
-                context.startActivity(intent);
+                //跳转按钮的跳转方式(界面跳转动画)
+                context.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation((Activity) context).toBundle());
             }
         });
         return holder;

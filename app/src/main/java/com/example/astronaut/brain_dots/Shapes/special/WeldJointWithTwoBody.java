@@ -27,10 +27,10 @@ public class WeldJointWithTwoBody {
      * @param anchor           锚点
      * @param frequencyHz      关节频率
      * @param dampingRatio     阻尼系数
-     * @param angle  两个刚体之间的角度差
+     * @param angle            两个刚体之间的角度差
      */
     public WeldJointWithTwoBody(String id, World world, boolean collideConnected,
-                                RigidBodyShapes bodyA, RigidBodyShapes bodyB, 	float angle,Vec2 anchor,
+                                RigidBodyShapes bodyA, RigidBodyShapes bodyB, float angle, Vec2 anchor,
                                 float frequencyHz, float dampingRatio) {
         //给物理世界类对象赋值
         this.world = world;
@@ -41,7 +41,9 @@ public class WeldJointWithTwoBody {
         //给是否允许碰撞标志赋值
         weldJointDef.collideConnected = collideConnected;
         //调用焊接关节的初始化方法
-        weldJointDef.initialize(bodyA.rigidBody, bodyB.rigidBody, anchor);
+        if (bodyA.rigidBody != null && bodyB.rigidBody != null) {
+            weldJointDef.initialize(bodyA.rigidBody, bodyB.rigidBody, anchor);
+        }
         //给关节频率赋值
         weldJointDef.frequencyHz = frequencyHz;
         //给阻尼系数赋值

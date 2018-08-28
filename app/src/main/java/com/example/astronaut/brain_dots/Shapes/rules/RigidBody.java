@@ -10,6 +10,10 @@ package com.example.astronaut.brain_dots.Shapes.rules;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
+import org.jbox2d.dynamics.Body;
+
+import java.util.List;
+
 
 /**
  * 该类为一个接口
@@ -27,4 +31,9 @@ public interface RigidBody {
 
     //在SurfaceView面板中画出自己
     void drawBodySelf(Canvas canvas, Paint paint);
+
+
+    //在一定的时候销毁自己
+    boolean destroySelf(List list, RigidBody body);
+
 }

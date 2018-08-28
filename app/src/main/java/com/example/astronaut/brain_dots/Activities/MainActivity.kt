@@ -72,22 +72,22 @@ class MainActivity : AppCompatActivity() {
                 world, ColorUtil.getGray())
         shapesList.add(rectangle)
 
-        val rectangle1 = Creator.createRectangle(500f, 400f, 30f,
-                5f, false, world, ColorUtil.getGray(), 0f)
-        val rectangle2 = Creator.createRectangle(580f, 400f, 30f,
-                5f, false, world, ColorUtil.getGray(), 10f)
-        val rectangle3 = Creator.createRectangle(610f, 400f, 30f,
-                5f, false, world, ColorUtil.getGray(), 0f)
+//        val rectangle1 = Creator.createRectangle(500f, 400f, 30f,
+//                5f, false, world, ColorUtil.getGray(), 0f)
+//        val rectangle2 = Creator.createRectangle(580f, 400f, 30f,
+//                5f, false, world, ColorUtil.getGray(), 10f)
+//        val rectangle3 = Creator.createRectangle(610f, 400f, 30f,
+//                5f, false, world, ColorUtil.getGray(), 0f)
 
         Log.d("tag!!", "" + Math.toDegrees(0.5233))
 
-        WeldJointWithTwoBody("1", world, false, rectangle1, rectangle2, 0f,
-                Vec2(550f, 400f), 15f, 0f)
-        WeldJointWithTwoBody("1", world, false, rectangle2, rectangle3, 0f,
-                Vec2(590f, 400f), 15f, 0f)
-        shapesList.add(rectangle1)
-        shapesList.add(rectangle2)
-        shapesList.add(rectangle3)
+//        WeldJointWithTwoBody("1", world, false, rectangle1, rectangle2, 0f,
+//                Vec2(550f, 400f), 15f, 0f)
+//        WeldJointWithTwoBody("1", world, false, rectangle2, rectangle3, 0f,
+//                Vec2(590f, 400f), 15f, 0f)
+//        shapesList.add(rectangle1)
+//        shapesList.add(rectangle2)
+//        shapesList.add(rectangle3)
 
 
         val fileName = "Level/level2.map"

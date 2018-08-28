@@ -1,4 +1,4 @@
-package com.example.astronaut.brain_dots.Utils;
+package com.example.astronaut.brain_dots.Utils.gameUtils;
 
 /*
  *Created by 魏兴源 on 2018-07-23
@@ -6,14 +6,13 @@ package com.example.astronaut.brain_dots.Utils;
  *
  */
 
-
-import android.util.Log;
-
 import com.example.astronaut.brain_dots.Activities.GameViewActivity;
 import com.example.astronaut.brain_dots.Domain.Creator;
 import com.example.astronaut.brain_dots.Shapes.common.Ball;
 import com.example.astronaut.brain_dots.Shapes.common.Rectangle;
-import com.example.astronaut.brain_dots.Shapes.common.Triangle;
+import com.example.astronaut.brain_dots.Utils.ColorUtil;
+import com.example.astronaut.brain_dots.Utils.Constant;
+import com.example.astronaut.brain_dots.Utils.ReadFilesUtil;
 
 
 import java.util.ArrayList;
@@ -43,7 +42,6 @@ public class MapUtil {
            计算可以拆分多少组
           length % groupSize == 0 ? length / groupSize : length / groupSize +1
           这里使用 ( length + groupSize - 1 ) / groupSize则减少运算了。
-
           */
         int num = (length + metaLength - 1) / metaLength;
         List<List<String>> listStringList = new ArrayList<>();
@@ -67,23 +65,38 @@ public class MapUtil {
 
     private static void setBodyInGameView(List<String> list) {
         String bodyName = list.get(0);
+        //图形的起始位置
         float posX = Constant.SCREEN_HEIGHT * Float.valueOf(list.get(1));
-        float posY = Constant.SCREEN_WIDTH * Float.valueOf(list.get(2));
+        float posY = Constant.SCREEN_WIDTH * Float.valueOf(list.get(2)) + 30;
+        //图形的宽高
         float bodyWidth = Constant.SCREEN_HEIGHT * Float.valueOf(list.get(3));
         float bodyHeight = Constant.SCREEN_WIDTH * Float.valueOf(list.get(4));
+
+        if (posX <= 10) {
+            posX = 0;
+
+        }
+        if (Constant.SCREEN_WIDTH - posY <= 50) {
+            posY = Constant.SCREEN_WIDTH;
+
+        }
         switch (bodyName) {
             case "redBall":
-                Ball redBall = Creator.createBall(posX, posY, 45f, false, activity.world,
+                Ball redBall = Creator.createBall(posX + 100f, posY + 100f, 45f, false, activity.world,
                         ColorUtil.getRedBallColor());
                 activity.shapesList.add(redBall);
+                //添加到只存放小球的集合
+                activity.ballList.add(redBall);
                 break;
             case "blueBall":
-                Ball blueBall = Creator.createBall(posX, posY, 45f, false, activity.world,
+                Ball blueBall = Creator.createBall(posX + 100f, posY + 100f, 45f, false, activity.world,
                         ColorUtil.getBlueBallColor());
                 activity.shapesList.add(blueBall);
+                //添加到只存放小球的集合
+                activity.ballList.add(blueBall);
                 break;
             case "one1":
-                Ball staticBall = Creator.createBall(posX, posY, bodyWidth, true, activity.world,
+                Ball staticBall = Creator.createBall(posX, posY, bodyWidth, false, activity.world,
                         ColorUtil.getStaticBodyColor());
                 activity.shapesList.add(staticBall);
                 break;
@@ -98,8 +111,8 @@ public class MapUtil {
                 activity.shapesList.add(rectangleVertical);
                 break;
             case "one4":
-                Rectangle square = Creator.createRectangle(posX,posY,bodyWidth/2,bodyHeight/2,
-                        true,activity.world,ColorUtil.getStaticBodyColor());
+                Rectangle square = Creator.createRectangle(posX + bodyWidth / 2, posY + bodyHeight / 2 + 50, bodyWidth / 2, bodyHeight / 2,
+                        true, activity.world, ColorUtil.getStaticBodyColor());
                 activity.shapesList.add(square);
             case "one5":
 //                Triangle triangle = Creator.

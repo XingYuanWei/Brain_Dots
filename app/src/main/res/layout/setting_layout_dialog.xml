@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/setting_str"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="40sp" />
+
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/switchSound"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/soundOn"
+            android:textOff="@string/off"
+            android:textOn="@string/on"
+            android:textSize="20sp"
+            app:showText="true"
+            app:switchMinWidth="60dp"
+            app:switchPadding="100dp" />
+
+        <android.support.v7.widget.SwitchCompat
+            android:id="@+id/switchSoundEffect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/soundEffect"
+            android:textOff="@string/off"
+            android:textOn="@string/on"
+            android:textSize="20sp"
+            app:showText="true"
+            app:switchMinWidth="60dp"
+            app:switchPadding="100dp" />
+    </android.support.v7.widget.LinearLayoutCompat>
+</android.support.constraint.ConstraintLayout>
