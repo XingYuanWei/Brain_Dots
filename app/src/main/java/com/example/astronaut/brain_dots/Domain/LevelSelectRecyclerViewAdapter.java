@@ -6,15 +6,13 @@ package com.example.astronaut.brain_dots.Domain;
  *
  */
 
-import android.app.Activity;
-import android.app.ActivityOptions;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.transition.Explode;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +22,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.astronaut.brain_dots.Activities.GameViewActivity;
-import com.example.astronaut.brain_dots.Activities.LevelChoiceActivity;
 import com.example.astronaut.brain_dots.Bean.LevelBean;
 import com.example.astronaut.brain_dots.R;
 
@@ -50,7 +47,7 @@ public class LevelSelectRecyclerViewAdapter extends RecyclerView.Adapter<LevelSe
         TextView recyclerItemText;
 
         //内部类的构造函数
-        public ViewHolder(View itemView) {
+        ViewHolder(View itemView) {
             super(itemView);
             cardView = (CardView) itemView;
             recyclerItemImage = itemView.findViewById(R.id.level_recycler_item_image);
@@ -78,7 +75,8 @@ public class LevelSelectRecyclerViewAdapter extends RecyclerView.Adapter<LevelSe
                 data.putSerializable("levelData", level);
                 intent.putExtras(data);
                 //跳转按钮的跳转方式(界面跳转动画)
-                context.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation((Activity) context).toBundle());
+//                context.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation((Activity) context).toBundle());
+                context.startActivity(intent);
             }
         });
         return holder;

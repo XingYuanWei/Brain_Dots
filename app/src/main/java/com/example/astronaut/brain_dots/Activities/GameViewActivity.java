@@ -6,14 +6,16 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.nfc.FormatException;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.transition.Explode;
-import android.transition.Fade;
-import android.transition.Slide;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -23,9 +25,9 @@ import com.example.astronaut.brain_dots.Shapes.common.Ball;
 import com.example.astronaut.brain_dots.Shapes.rules.RigidBodyShapes;
 import com.example.astronaut.brain_dots.Utils.gameUtils.BackgroundMusicUtil;
 import com.example.astronaut.brain_dots.Utils.Constant;
-import com.example.astronaut.brain_dots.Utils.gameUtils.GameContactListener;
 import com.example.astronaut.brain_dots.Utils.gameUtils.MapUtil;
-import com.example.astronaut.brain_dots.View.show.ShowGameSurfaceView;
+import com.example.astronaut.brain_dots.View.componentShow.GifSurfaceView;
+import com.example.astronaut.brain_dots.View.gameShow.ShowGameSurfaceView;
 import com.example.astronaut.brain_dots.View.thread.GarbageThread;
 
 import org.jbox2d.common.Vec2;
@@ -55,14 +57,37 @@ public class GameViewActivity extends AppCompatActivity {
     //存储图片
     public Bitmap[] pictures = new Bitmap[3];
 
+    /**
+     * 主线程中的Handler,当游戏失败或结束的时候,
+     * 用于把当前的ShowGamesSurfaceView替换成
+     * 其他可操作的界面
+     */
+    public Handler mainHandler;
+    GifSurfaceView gifSurfaceView;
+    //游戏面板
+    ShowGameSurfaceView gameView;
+
+    @SuppressLint("HandlerLeak")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //接收来自从选关界面来的信息
         Intent intent = getIntent();
         LevelBean levelInfo = (LevelBean) intent.getSerializableExtra("levelData");
+
         //全屏
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+        /*
+         * 加载动画,setContentView必须要写在"去标题"与"全屏"代码之间
+         * 这是由于加载问题,不详细说
+         *
+         * */
+        setContentView(R.layout.loading_layout);
+        gifSurfaceView = findViewById(R.id.gif_view);
+        gifSurfaceView.setPath("Gif/loading.gif");
+        //图片放大倍数
+        gifSurfaceView.setZoom(2.7f);
+
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         //横屏
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
@@ -76,9 +101,10 @@ public class GameViewActivity extends AppCompatActivity {
             Constant.SCREEN_WIDTH = displayMetrics.heightPixels;
             Constant.SCREEN_HEIGHT = displayMetrics.widthPixels;
         }
+
         //在当前类(所要跳转的Activity页面)中设置该Activity的进出场动画
-        getWindow().setEnterTransition(new Explode().setDuration(2000));
-        getWindow().setExitTransition(new Explode().setDuration(2000));
+//        getWindow().setEnterTransition(new Explode().setDuration(1200));
+        getWindow().setExitTransition(new Explode().setDuration(1200));
         //调用初始化图片方法初始化图片 是图片加载进去
         initBitmap(this.getResources());
         //屏幕自适应
@@ -92,10 +118,78 @@ public class GameViewActivity extends AppCompatActivity {
         Log.e("Tag!!", "onCreate: " + fileName);
         //在地图上放置所有游戏组件
         MapUtil.setLevel(this, fileName);
+
+        //当前关卡的文件名称
+        Constant.CURRENT_LEVEL = fileName;
+        Constant.NEXT_LEVEL = getNextDataName(levelInfo.getLevelID());
+        Log.e("Tag!!", "onCreate: " + Constant.NEXT_LEVEL);
+
         //垃圾回收线程
         garbageThread = new GarbageThread(this);
         //开启垃圾回收线程
         garbageThread.start();
+
+        //更新UI线程的Handler
+        mainHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                switch (msg.what) {
+                    //玩家通关失败后
+                    case Constant.HANDLER_MSG_LOSE:
+                        setContentView(R.layout.result_layout_activity);
+                        break;
+                    //通过成功
+                    case Constant.HANDLER_MSG_PASS:
+                        setContentView(R.layout.result_layout_activity);
+                        break;
+                    //停止加载游戏
+                    case Constant.STOP_LOADING:
+                        setContentView(gameView);
+                        break;
+                    //进入加载画面;
+                    case Constant.START_LOADING:
+//                        setContentView(R.layout.loading_layout);
+                        if (gifSurfaceView == null) {
+                            gifSurfaceView = new GifSurfaceView(GameViewActivity.this);
+                            gifSurfaceView.setPath("Gif/loading.gif");
+                            //图片放大倍数
+                            gifSurfaceView.setZoom(2.7f);
+                        }
+                        GameViewActivity.this.setContentView(gifSurfaceView);
+                        break;
+                    case Constant.RENEW_GAME:
+                        gameView = null;
+                        /*
+                         * 由于world没有清空所有物体的功能,只能重新创建一个事件
+                         * 不然里面的物体还是在原来的位置, 虽然画面上是新的
+                         *  先把原有的置为空,再创建世界,并设置重力.
+                         *  另外,一定要先创建新的世界,再去初始化地图.否则两者可能在不同的一个世界上.
+                         *  手绘制的刚体对新地图中的物体无触碰效果,并且红蓝两个小球的即使碰撞也不会有
+                         *   效果.(因为碰撞监听是在ShowGameSurfaceView中添加的)
+                         * */
+                        world = null;
+                        world = new World(new Vec2(0f, 10.0f));
+                        //初始化地图
+                        MapUtil.setLevel(GameViewActivity.this, Constant.CURRENT_LEVEL);
+                        ShowGameSurfaceView newGameView = new ShowGameSurfaceView(GameViewActivity.this);
+                        GameViewActivity.this.setContentView(newGameView);
+                }
+            }
+        };
+
+        //8s过后从加载动画切换为游戏界面
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(8000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                mainHandler.sendEmptyMessage(Constant.STOP_LOADING);
+            }
+        }.start();
 
 //        Rectangle rectangle = Creator.createRectangle(1200, Constant.SCREEN_WIDTH,
 //                1200, 20, true, world, ColorUtil.getStaticBodyColor());
@@ -259,12 +353,12 @@ public class GameViewActivity extends AppCompatActivity {
 //            Polygon polygon = Creator.createPolygon(posi,world);
 ////            shapesList.add(polygon);
 //        }
-
         //创建游戏面板
-        ShowGameSurfaceView gameView = new ShowGameSurfaceView(this);
-        setContentView(gameView);
+        //创建游戏界面,在加载完成之后添加到界面上
+        gameView = new ShowGameSurfaceView(this);
     }
 
+    //该Activity暂停
     @Override
     protected void onPause() {
         super.onPause();
@@ -275,6 +369,41 @@ public class GameViewActivity extends AppCompatActivity {
     //初始化图片
     private void initBitmap(Resources resources) {
         pictures[0] = BitmapFactory.decodeResource(resources, R.drawable.star);
-        pictures[1] = BitmapFactory.decodeResource(resources,R.drawable.failed);
+        pictures[1] = BitmapFactory.decodeResource(resources, R.drawable.failed);
     }
+
+    //获取下一关数据文件的名称
+    private String getNextDataName(String curryMapDataID) {
+        int curryLevelNum;
+        try {
+            curryLevelNum = Integer.valueOf(curryMapDataID);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e("Tag!!", "格式化异常!");
+            return null;
+        }
+        int nextLevelNum = curryLevelNum + 1;
+        return "Level/level" + nextLevelNum + ".map";
+    }
+
+    /*
+     * 点击重新开始游戏的ImageButton
+     * 重新开始游戏事件处理函数
+     * */
+    public void renewGame(View view) {
+        mainHandler.sendEmptyMessage(Constant.RENEW_GAME);
+    }
+
+    /*
+     * 点击下一关ImageButton
+     * 开始下一关游戏
+     *
+     * */
+    public void nextLevel(View view) {
+        /*
+         * 点下一关时候,先把界面换成加载界面
+         * */
+        mainHandler.sendEmptyMessage(Constant.START_LOADING);
+    }
+
 }

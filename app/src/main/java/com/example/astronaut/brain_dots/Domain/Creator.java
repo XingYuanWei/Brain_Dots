@@ -7,10 +7,10 @@ package com.example.astronaut.brain_dots.Domain;
  */
 
 
-import android.graphics.Point;
 import android.support.annotation.NonNull;
 
 
+import com.example.astronaut.brain_dots.Activities.GameViewActivity;
 import com.example.astronaut.brain_dots.Shapes.common.Ball;
 import com.example.astronaut.brain_dots.Shapes.common.Line;
 import com.example.astronaut.brain_dots.Shapes.common.Polygon;
@@ -168,7 +168,7 @@ public class Creator {
     }
 
     @NonNull
-    public static Ball createBall(float x, float y, float radius, boolean isStatic, World world, int color) {
+    public static Ball createBall(float x, float y, float radius, boolean isStatic, World world, int color, GameViewActivity activity) {
         BodyDef bodyDef = new BodyDef();
         //球一定是运动的
         bodyDef.type = isStatic ? BodyType.STATIC : BodyType.DYNAMIC;
@@ -186,7 +186,7 @@ public class Creator {
         fixtureDef.restitution = 0.09f;
         fixtureDef.shape = circle;
         rigidBody.createFixture(fixtureDef);
-        return new Ball(rigidBody, radius, color);
+        return new Ball(rigidBody, radius, color, activity);
     }
 
     public static Ball createTouchBall(float x, float y, float radius, boolean isStatic, World world, int color) {
@@ -276,7 +276,7 @@ public class Creator {
         polygonShape.set(vertices, count);
         fixtureDef.shape = polygonShape;
         if (!isStatic) {
-            if (rigidBody != null){
+            if (rigidBody != null) {
                 rigidBody.createFixture(fixtureDef);
             }
         } else {

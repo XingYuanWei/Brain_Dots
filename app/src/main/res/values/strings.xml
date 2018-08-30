@@ -20,4 +20,6 @@
     <string name="on">On</string>
     <string name="soundOn">声音开关</string>
     <string name="soundEffect">音效开关</string>
+    <string name="re_game">重新开始游戏</string>
+    <string name="todo">TODO</string>
 </resources>

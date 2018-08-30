@@ -1,11 +1,10 @@
-package com.example.astronaut.brain_dots.View.show;
+package com.example.astronaut.brain_dots.View.componentShow;
 
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.SwitchCompat;
-import android.transition.Explode;
 import android.view.Window;
 import android.widget.CompoundButton;
 
@@ -46,9 +45,7 @@ public class SettingDialog extends Dialog {
           状态,比如背景音乐选择了Off,下一次打开对话框的时候
           还是要off(开关为关闭状态),而不是又被初始化为打开状态
           由于此对话框是根据Activity的存在而存在.所以每次构造新的
-          对话框时候都会把soundFlag标记重新构造,所以把这两个标记定义为类变量.
-
-            SettingDialog dialog = new SettingDialog(this);
+          对话框时候都会把soundFlag标记重新构造,所以把这两个标记定义为类变量. ;
             如果在不是一直构造新的对话框对象,则可以不设置为类变量.
           */
         switchSound.setChecked(soundFlag);
@@ -73,10 +70,10 @@ public class SettingDialog extends Dialog {
         switchSoundEffect.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (!isChecked){
+                if (!isChecked) {
                     buttonView.setChecked(false);
                     soundEffectFlag = false;
-                }else {
+                } else {
                     buttonView.setChecked(true);
                     soundEffectFlag = true;
                 }

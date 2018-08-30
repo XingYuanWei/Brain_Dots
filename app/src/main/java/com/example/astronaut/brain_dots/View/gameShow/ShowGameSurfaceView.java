@@ -1,4 +1,4 @@
-package com.example.astronaut.brain_dots.View.show;
+package com.example.astronaut.brain_dots.View.gameShow;
 
 import android.annotation.SuppressLint;
 import android.graphics.Canvas;
@@ -14,7 +14,6 @@ import android.view.SurfaceHolder;
 
 import com.example.astronaut.brain_dots.Activities.GameViewActivity;
 import com.example.astronaut.brain_dots.Domain.Creator;
-import com.example.astronaut.brain_dots.Shapes.common.Ball;
 import com.example.astronaut.brain_dots.Shapes.common.Polygon;
 import com.example.astronaut.brain_dots.Shapes.rules.RigidBodyShapes;
 import com.example.astronaut.brain_dots.Shapes.special.WeldJointWithTwoBody;
@@ -23,6 +22,7 @@ import com.example.astronaut.brain_dots.Utils.ColorUtil;
 import com.example.astronaut.brain_dots.Utils.Constant;
 import com.example.astronaut.brain_dots.Utils.MathUtil;
 import com.example.astronaut.brain_dots.Utils.gameUtils.GameContactListener;
+import com.example.astronaut.brain_dots.View.componentShow.SettingDialog;
 import com.example.astronaut.brain_dots.View.thread.RefreshFrameThread;
 
 
@@ -62,13 +62,6 @@ public class ShowGameSurfaceView extends GLSurfaceView implements SurfaceHolder.
     RefreshFrameThread refreshThread;
     //多线程是否已打开标记
     boolean flag = false;
-    /*
-     * 当红蓝小球碰撞成功之后,画出小星星表示庆贺
-     * 该集合用于存放PassTwinkle类,并在指定的位置上
-     * 画出小星星
-     *
-     * */
-    public List<PassTwinkle> twinkleList;
 
     public ShowGameSurfaceView(GameViewActivity activity) {
         super(activity);
@@ -80,8 +73,7 @@ public class ShowGameSurfaceView extends GLSurfaceView implements SurfaceHolder.
         paint.setAntiAlias(true);
         //初始化手绘时候显示其轨迹的集合
         drawPathList = new ArrayList<>();
-        //初始化胜利显示出小星星的集合
-        twinkleList = new ArrayList<>();
+
         //初始化画笔
         initPaint();
         /*
@@ -89,6 +81,8 @@ public class ShowGameSurfaceView extends GLSurfaceView implements SurfaceHolder.
          * 现在要重新设置为true
          * */
         Constant.DRAW_THREAD_FLAG = true;
+        //同样的也要把游戏输赢状态重置,-1为输赢未知状态
+        Constant.STATE = -1;
 
         //添加碰撞监听器
         GameContactListener contactListener = new GameContactListener(this);
@@ -110,9 +104,9 @@ public class ShowGameSurfaceView extends GLSurfaceView implements SurfaceHolder.
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
+    //根据手滑动的路径,画出轨迹
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-//        drawBackground(canvas);
         if (drawPathList != null && !drawPathList.isEmpty()) {
             for (DrawPath drawPath : drawPathList) {
                 if (drawPath.path != null) {
@@ -124,34 +118,30 @@ public class ShowGameSurfaceView extends GLSurfaceView implements SurfaceHolder.
 
     //把刚体集合中所有刚体都画出来
     private void drawBody(Canvas canvas) {
-        if (canvas == null) {
-//            Log.d("tag", "onDraw: " + "canvas is null");
-            return;
-        } else {
-            //背景
-            canvas.drawARGB(255, 255, 255, 255);
+        if (canvas != null) {
             for (RigidBodyShapes bodyShapes : activity.shapesList) {
-                if (bodyShapes.isLived){
+                if (bodyShapes.isLived) {
                     bodyShapes.drawBodySelf(canvas, paint);
                 }
             }
         }
     }
 
-    private void drawStar(Canvas canvas) {
-        if (!twinkleList.isEmpty()) {
-            for (PassTwinkle twinkle : twinkleList) {
-                twinkle.drawStar(canvas, activity, paint);
-            }
-        }
-    }
-
     //画出背景
     private void drawBackground(Canvas canvas) {
-        Paint drawBackPaint = new Paint();
-        drawBackPaint.setColor(ColorUtil.getSkyBlue());
-        drawBackPaint.setStrokeWidth(10f);
-        canvas.drawLine(20f, 20f, 500f, 20f, drawBackPaint);
+        if (canvas != null) {
+            //主背景色调
+            canvas.drawARGB(255, 255, 255, 255);
+            //画背景的画笔
+            Paint drawBackPaint = new Paint();
+            //设置画笔颜色
+            drawBackPaint.setColor(ColorUtil.getSkyBlue());
+            drawBackPaint.setStrokeWidth(1f);
+            for (int i = 0; i < 10; i++) {
+//            canvas.drawLine(0,i * 100,Constant.SCREEN_HEIGHT,i * 100,drawBackPaint);
+//            canvas.drawLine(i * 100,0,i * 100,Constant.SCREEN_WIDTH,drawBackPaint);
+            }
+        }
     }
 
     @SuppressLint("WrongCall")
@@ -161,9 +151,10 @@ public class ShowGameSurfaceView extends GLSurfaceView implements SurfaceHolder.
         Canvas canvas = holder.lockCanvas();
         try {
             synchronized (holder) {
+                //先调用
+                drawBackground(canvas);
                 drawBody(canvas);
                 onDraw(canvas);
-                drawStar(canvas);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -296,6 +287,7 @@ public class ShowGameSurfaceView extends GLSurfaceView implements SurfaceHolder.
             //集合中下一个刚体的索引
             int index = i + 1;
             if (index < length) {
+                //前一个刚体和后一个刚体,两两连接
                 Polygon polygonOne = polygonList.get(i);
                 Polygon polygonTwo = polygonList.get(index);
                 if (polygonOne.rigidBody != null && polygonTwo.rigidBody != null) {

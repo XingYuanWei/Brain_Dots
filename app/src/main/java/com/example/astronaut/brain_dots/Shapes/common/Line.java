@@ -3,16 +3,13 @@ package com.example.astronaut.brain_dots.Shapes.common;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Path;
 
 import com.example.astronaut.brain_dots.Shapes.rules.RigidBody;
 import com.example.astronaut.brain_dots.Shapes.rules.RigidBodyShapes;
 import com.example.astronaut.brain_dots.Utils.Constant;
-import com.example.astronaut.brain_dots.View.show.DrawPath;
 
 import org.jbox2d.dynamics.Body;
 
-import java.util.ArrayList;
 import java.util.List;
 
 

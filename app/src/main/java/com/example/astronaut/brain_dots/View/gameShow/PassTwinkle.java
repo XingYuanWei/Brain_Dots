@@ -1,4 +1,4 @@
-package com.example.astronaut.brain_dots.View.show;
+package com.example.astronaut.brain_dots.View.gameShow;
 
 /*
  *Created by 魏兴源 on 2018-08-28
@@ -9,8 +9,6 @@ package com.example.astronaut.brain_dots.View.show;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
-
-import com.example.astronaut.brain_dots.Activities.GameViewActivity;
 
 /**
  *
@@ -27,10 +25,10 @@ public class PassTwinkle {
         this.y = y;
     }
 
-    public void drawStar(Canvas canvas, GameViewActivity activity, Paint paint){
+    public void drawStar(Canvas canvas, ShowResultSurfaceView resultView, Paint paint){
         if (canvas != null){
             canvas.save();
-            canvas.drawBitmap(activity.pictures[0],x,y,paint);
+            canvas.drawBitmap(resultView.pictures[0],x,y,paint);
         }
     }
 }

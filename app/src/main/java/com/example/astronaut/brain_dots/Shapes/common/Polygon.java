@@ -37,6 +37,10 @@ public class Polygon extends RigidBodyShapes {
         }
         float x = rigidBody.getPosition().x * Constant.RATE;
         float y = rigidBody.getPosition().y * Constant.RATE;
+        //如果此时不在屏幕的显示范围之内,则把它的isLived属性设为false,
+//        if (x < 0 || x > Constant.SCREEN_HEIGHT || y > Constant.SCREEN_WIDTH) {
+////            isLived = false;
+//        }
         float angle = rigidBody.getAngle();
         canvas.save();
         Matrix matrix = new Matrix();
@@ -48,7 +52,6 @@ public class Polygon extends RigidBodyShapes {
             path.lineTo(x + position[i][0],y + position[i][1]);
         }
         path.lineTo(x + position[0][0],y + position[0][1]);
-
         canvas.drawPath(path,paint);
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(1);

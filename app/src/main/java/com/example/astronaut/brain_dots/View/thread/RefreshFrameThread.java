@@ -8,10 +8,9 @@ package com.example.astronaut.brain_dots.View.thread;
 
 import android.os.Build;
 import android.support.annotation.RequiresApi;
-import android.util.Log;
 
 import com.example.astronaut.brain_dots.Utils.Constant;
-import com.example.astronaut.brain_dots.View.show.ShowGameSurfaceView;
+import com.example.astronaut.brain_dots.View.gameShow.ShowGameSurfaceView;
 
 /**
  * 该类用于刷新各个对象中的数据，比如坐标信息，尺寸信息等
@@ -29,7 +28,7 @@ public class RefreshFrameThread extends Thread {
     @Override
     public void run() {//Constant.DRAW_THREAD_FLAG
         while (true) {
-            /**
+            /*
              *
              * 这样写的好处是当Constant.DRAW_THREAD_FLAG为false的时候
              * 模拟停止,但是线程没有停止,可以继续在上面写动画.是否有其他

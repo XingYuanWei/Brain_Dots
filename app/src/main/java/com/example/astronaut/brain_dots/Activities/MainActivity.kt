@@ -9,7 +9,6 @@ import android.view.Window
 import android.view.WindowManager
 import com.example.astronaut.brain_dots.Domain.Creator
 import com.example.astronaut.brain_dots.Shapes.rules.RigidBodyShapes
-import com.example.astronaut.brain_dots.Shapes.special.WeldJointWithTwoBody
 import com.example.astronaut.brain_dots.Utils.ColorUtil
 import com.example.astronaut.brain_dots.Utils.Constant
 import org.jbox2d.common.Vec2
@@ -54,11 +53,11 @@ class MainActivity : AppCompatActivity() {
         world = World(gravity)
 
         //创建一个蓝球
-        val blueBall = Creator.createBall(600f, 200f, 50f, false, world, ColorUtil.getBlue())
-        shapesList.add(blueBall)
-        //创建红球
-        val redBall = Creator.createBall(400f, 200f, 50f, false, world, ColorUtil.getRed())
-        shapesList.add(redBall)
+//        val blueBall = Creator.createBall(600f, 200f, 50f, false, world, ColorUtil.getBlue())
+//        shapesList.add(blueBall)
+//        //创建红球
+//        val redBall = Creator.createBall(400f, 200f, 50f, false, world, ColorUtil.getRed())
+//        shapesList.add(redBall)
         /**
          * SetLinearVelocity是直接用来改变物体的速度，
          * 中间没有什么加速度的概念，直接定义新速度。

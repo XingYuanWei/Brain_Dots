@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/result_view_relativeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.example.astronaut.brain_dots.View.gameShow.ShowResultSurfaceView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <android.support.v7.widget.AppCompatImageButton
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentTop="true"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/re_game"
+            android:src="@drawable/regame"
+            android:theme="@style/RippleWhile" />
+
+        <ImageButton
+            android:layout_width="90dp"
+            android:layout_height="130dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/next_level"
+            android:contentDescription="@string/todo"
+            android:onClick="nextLevel"
+            android:scaleType="fitXY" />
+
+        <ImageButton
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/re_game"
+            android:contentDescription="@string/todo"
+            android:onClick="renewGame"
+            android:scaleType="fitXY" />
+    </RelativeLayout>
+
+</android.support.constraint.ConstraintLayout>

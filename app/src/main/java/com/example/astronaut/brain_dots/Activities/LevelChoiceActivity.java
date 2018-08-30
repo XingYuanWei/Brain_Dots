@@ -32,7 +32,8 @@ import com.example.astronaut.brain_dots.Bean.LevelBean;
 import com.example.astronaut.brain_dots.Domain.LevelSelectRecyclerViewAdapter;
 import com.example.astronaut.brain_dots.R;
 import com.example.astronaut.brain_dots.Utils.gameUtils.BackgroundMusicUtil;
-import com.example.astronaut.brain_dots.View.show.SettingDialog;
+import com.example.astronaut.brain_dots.View.componentShow.GifSurfaceView;
+import com.example.astronaut.brain_dots.View.componentShow.SettingDialog;
 ;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,6 +47,8 @@ public class LevelChoiceActivity extends AppCompatActivity {
     LevelSelectRecyclerViewAdapter adapter;
     //RecyclerView的数据
     private List<LevelBean> levelSelectList = new ArrayList<>();
+    //Gif动画面板
+    GifSurfaceView gifSurfaceView;
 
     private LevelBean[] levels = {
             new LevelBean("1", R.drawable.level1, "level1"),
@@ -59,6 +62,7 @@ public class LevelChoiceActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         //设置为全屏
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);

@@ -57,6 +57,8 @@ public class MapUtil {
 
     public static void setLevel(GameViewActivity activity, String fileName) {
         MapUtil.activity = activity;
+        //先清空集合
+        activity.shapesList.clear();
         List<List<String>> levelElement = getMapElement(activity, fileName);
         for (List<String> stringList : levelElement) {
             setBodyInGameView(stringList);
@@ -83,21 +85,21 @@ public class MapUtil {
         switch (bodyName) {
             case "redBall":
                 Ball redBall = Creator.createBall(posX + 100f, posY + 100f, 45f, false, activity.world,
-                        ColorUtil.getRedBallColor());
+                        ColorUtil.getRedBallColor(), activity);
                 activity.shapesList.add(redBall);
                 //添加到只存放小球的集合
                 activity.ballList.add(redBall);
                 break;
             case "blueBall":
                 Ball blueBall = Creator.createBall(posX + 100f, posY + 100f, 45f, false, activity.world,
-                        ColorUtil.getBlueBallColor());
+                        ColorUtil.getBlueBallColor(), activity);
                 activity.shapesList.add(blueBall);
                 //添加到只存放小球的集合
                 activity.ballList.add(blueBall);
                 break;
             case "one1":
                 Ball staticBall = Creator.createBall(posX, posY, bodyWidth, false, activity.world,
-                        ColorUtil.getStaticBodyColor());
+                        ColorUtil.getStaticBodyColor(), activity);
                 activity.shapesList.add(staticBall);
                 break;
             case "one2":
