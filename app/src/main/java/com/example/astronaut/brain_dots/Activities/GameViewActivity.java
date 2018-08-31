@@ -178,12 +178,12 @@ public class GameViewActivity extends AppCompatActivity {
             }
         };
 
-        //8s过后从加载动画切换为游戏界面
+        //6s过后从加载动画切换为游戏界面
         new Thread() {
             @Override
             public void run() {
                 try {
-                    Thread.sleep(8000);
+                    Thread.sleep(6000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
