@@ -88,8 +88,11 @@ public class GifSurfaceView extends SurfaceView implements SurfaceHolder.Callbac
 
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
-        //打开背景音乐
-        BackgroundMusicUtil.playBackGroundMusic(true);
+        //如果打开了背景音乐,则在加载页面的时候也要播放
+        if (SettingDialog.soundFlag) {
+            //打开背景音乐
+            BackgroundMusicUtil.playBackGroundMusic(true);
+        }
     }
 
     /**
