@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<litepal>
+    <dbname value="Level" />
+    <dbname value="Money" />
+
+    <version value="1" />
+
+    <list>
+        <mapping class="com.example.astronaut.brain_dots.Bean.LevelBean" />
+        <mapping class="com.example.astronaut.brain_dots.Bean.MoneyBean" />
+        <!--<mapping class="com.example.litepaltest.Category"></mapping>-->
+    </list>
+</litepal>

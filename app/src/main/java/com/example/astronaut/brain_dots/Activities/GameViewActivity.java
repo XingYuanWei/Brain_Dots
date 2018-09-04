@@ -6,7 +6,6 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.nfc.FormatException;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -20,11 +19,14 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.example.astronaut.brain_dots.Bean.LevelBean;
+import com.example.astronaut.brain_dots.Bean.MoneyBean;
+import com.example.astronaut.brain_dots.DAO.MoneyDAO;
 import com.example.astronaut.brain_dots.R;
 import com.example.astronaut.brain_dots.Shapes.common.Ball;
 import com.example.astronaut.brain_dots.Shapes.rules.RigidBodyShapes;
 import com.example.astronaut.brain_dots.Utils.gameUtils.BackgroundMusicUtil;
 import com.example.astronaut.brain_dots.Utils.Constant;
+import com.example.astronaut.brain_dots.Utils.gameUtils.GameContactListener;
 import com.example.astronaut.brain_dots.Utils.gameUtils.MapUtil;
 import com.example.astronaut.brain_dots.View.componentShow.GifSurfaceView;
 import com.example.astronaut.brain_dots.View.gameShow.ShowGameSurfaceView;
@@ -33,6 +35,7 @@ import com.example.astronaut.brain_dots.View.thread.GarbageThread;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.World;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,13 +70,19 @@ public class GameViewActivity extends AppCompatActivity {
     //游戏面板
     ShowGameSurfaceView gameView;
 
+    //添加碰撞监听器引用
+    GameContactListener contactListener;
+    //金钱对象的引用
+    public MoneyBean moneyBean;
+
     @SuppressLint("HandlerLeak")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //接收来自从选关界面来的信息
         Intent intent = getIntent();
-        LevelBean levelInfo = (LevelBean) intent.getSerializableExtra("levelData");
+        final LevelBean levelInfo = (LevelBean) intent.getSerializableExtra("levelData");
+        moneyBean = (MoneyBean) intent.getSerializableExtra("moneyBean");
 
         //全屏
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -117,12 +126,7 @@ public class GameViewActivity extends AppCompatActivity {
         String fileName = "Level/" + levelInfo.getLevelName() + ".map";
         Log.e("Tag!!", "onCreate: " + fileName);
         //在地图上放置所有游戏组件
-        MapUtil.setLevel(this, fileName);
-
-        //当前关卡的文件名称
-        Constant.CURRENT_LEVEL = fileName;
-        Constant.NEXT_LEVEL = getNextDataName(levelInfo.getLevelID());
-        Log.e("Tag!!", "onCreate: " + Constant.NEXT_LEVEL);
+        MapUtil.setLevel(this, fileName, levelInfo);
 
         //垃圾回收线程
         garbageThread = new GarbageThread(this);
@@ -147,19 +151,22 @@ public class GameViewActivity extends AppCompatActivity {
                     case Constant.STOP_LOADING:
                         setContentView(gameView);
                         break;
-                    //进入加载画面;
-                    case Constant.START_LOADING:
-//                        setContentView(R.layout.loading_layout);
-                        if (gifSurfaceView == null) {
-                            gifSurfaceView = new GifSurfaceView(GameViewActivity.this);
-                            gifSurfaceView.setPath("Gif/loading.gif");
-                            //图片放大倍数
-                            gifSurfaceView.setZoom(2.7f);
-                        }
-                        GameViewActivity.this.setContentView(gifSurfaceView);
-                        break;
-                    case Constant.RENEW_GAME:
+                    //下一关
+                    case Constant.NEXT_LEVEL:
                         gameView = null;
+                        world = null;
+//                        shapesList = null;
+                        System.gc();
+//                        shapesList = new ArrayList<>();
+                        world = new World(new Vec2(0, 10f));
+                        Constant.IS_NEW_THREAD = true;
+                        //初始化地图
+                        MapUtil.setLevel(GameViewActivity.this, Constant.NEXT_LEVEL_PATH, levelInfo);
+                        gameView = new ShowGameSurfaceView(GameViewActivity.this);
+                        GameViewActivity.this.setContentView(gameView);
+                        break;
+                    //重新开始
+                    case Constant.RENEW_GAME:
                         /*
                          * 由于world没有清空所有物体的功能,只能重新创建一个事件
                          * 不然里面的物体还是在原来的位置, 虽然画面上是新的
@@ -168,22 +175,33 @@ public class GameViewActivity extends AppCompatActivity {
                          *  手绘制的刚体对新地图中的物体无触碰效果,并且红蓝两个小球的即使碰撞也不会有
                          *   效果.(因为碰撞监听是在ShowGameSurfaceView中添加的)
                          * */
+                        gameView = null;
                         world = null;
+                        shapesList = null;
+                        contactListener = null;
+                        //提示系统垃圾回收
+                        System.gc();
                         world = new World(new Vec2(0f, 10.0f));
+                        shapesList = new ArrayList<>();
+                        //添加新的碰撞监听
+                        contactListener = new GameContactListener(GameViewActivity.this);
+                        world.setContactListener(contactListener);
+                        //线程是否为新线程IS_NEW_THREAD设为true
+                        Constant.IS_NEW_THREAD = true;
                         //初始化地图
-                        MapUtil.setLevel(GameViewActivity.this, Constant.CURRENT_LEVEL);
-                        ShowGameSurfaceView newGameView = new ShowGameSurfaceView(GameViewActivity.this);
-                        GameViewActivity.this.setContentView(newGameView);
+                        MapUtil.setLevel(GameViewActivity.this, Constant.CURRENT_LEVEL_PATH, levelInfo);
+                        gameView = new ShowGameSurfaceView(GameViewActivity.this);
+                        GameViewActivity.this.setContentView(gameView);
                 }
             }
         };
 
-        //6s过后从加载动画切换为游戏界面
+        //2s过后从加载动画切换为游戏界面
         new Thread() {
             @Override
             public void run() {
                 try {
-                    Thread.sleep(6000);
+                    Thread.sleep(2000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -355,6 +373,11 @@ public class GameViewActivity extends AppCompatActivity {
 //        }
         //创建游戏面板
         //创建游戏界面,在加载完成之后添加到界面上
+        contactListener = null;
+        //碰撞监听器
+        contactListener = new GameContactListener(this);
+        //添加碰撞监听
+        world.setContactListener(contactListener);
         gameView = new ShowGameSurfaceView(this);
     }
 
@@ -372,19 +395,6 @@ public class GameViewActivity extends AppCompatActivity {
         pictures[1] = BitmapFactory.decodeResource(resources, R.drawable.failed);
     }
 
-    //获取下一关数据文件的名称
-    private String getNextDataName(String curryMapDataID) {
-        int curryLevelNum;
-        try {
-            curryLevelNum = Integer.valueOf(curryMapDataID);
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.e("Tag!!", "格式化异常!");
-            return null;
-        }
-        int nextLevelNum = curryLevelNum + 1;
-        return "Level/level" + nextLevelNum + ".map";
-    }
 
     /*
      * 点击重新开始游戏的ImageButton
@@ -403,7 +413,7 @@ public class GameViewActivity extends AppCompatActivity {
         /*
          * 点下一关时候,先把界面换成加载界面
          * */
-        mainHandler.sendEmptyMessage(Constant.START_LOADING);
+        mainHandler.sendEmptyMessage(Constant.NEXT_LEVEL);
     }
 
 }
