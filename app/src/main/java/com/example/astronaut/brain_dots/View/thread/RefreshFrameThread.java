@@ -8,9 +8,11 @@ package com.example.astronaut.brain_dots.View.thread;
 
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.util.Log;
 
 import com.example.astronaut.brain_dots.Utils.Constant;
 import com.example.astronaut.brain_dots.View.gameShow.ShowGameSurfaceView;
+
 
 /**
  * 该类用于刷新各个对象中的数据，比如坐标信息，尺寸信息等
@@ -22,6 +24,7 @@ public class RefreshFrameThread extends Thread {
 
     public RefreshFrameThread(ShowGameSurfaceView gameView) {
         this.gameView = gameView;
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -37,10 +40,14 @@ public class RefreshFrameThread extends Thread {
              * */
             if (Constant.DRAW_THREAD_FLAG) {
 //                Log.e("Tag!!", "run: " + "step" );
-                gameView.activity.world.step(Constant.TIME_STEP, Constant.ITERATIONS, Constant.ITERATIONS);
+                try {
+                    gameView.activity.world.step(Constant.TIME_STEP, Constant.ITERATIONS, Constant.ITERATIONS);
+                } catch (ArrayIndexOutOfBoundsException exception) {
+                    exception.printStackTrace();
+                }
             }
-//            Log.d("tag", "run: X" + gameView.activity.getShapesList().get(0).rigidBody.getPosition().x);
-//            Log.d("tag", "run: Y" + gameView.activity.getShapesList().get(0).rigidBody.getPosition().y);
+//            Log.d("tag", "run: X" + gameView.activity.shapesList.get(0).rigidBody.getPosition().x);
+//            Log.d("tag", "run: Y" + gameView.activity.shapesList.get(0).rigidBody.getPosition().y);
             gameView.repaint();
 //            Log.e("Tag!!", "run: " + "running" );
         }
