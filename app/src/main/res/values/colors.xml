@@ -6,4 +6,7 @@
 
     <color name="black_overlay">#66000000</color>
     <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="gold_yellow">#ffd700</color>
+
 </resources>

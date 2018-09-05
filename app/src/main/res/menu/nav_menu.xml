@@ -13,13 +13,13 @@
             android:id="@+id/level_13_18"
             android:icon="@drawable/nav_location"
             android:title="@string/_13_18" />
-        <item
-            android:id="@+id/level_18_24"
-            android:icon="@drawable/nav_location"
-            android:title="@string/_19_24" />
-        <item
-            android:id="@+id/level_25_30"
-            android:icon="@drawable/nav_location"
-            android:title="@string/_25_30" />
+        <!--<item-->
+            <!--android:id="@+id/level_18_24"-->
+            <!--android:icon="@drawable/nav_location"-->
+            <!--android:title="@string/_19_24" />-->
+        <!--<item-->
+            <!--android:id="@+id/level_25_30"-->
+            <!--android:icon="@drawable/nav_location"-->
+            <!--android:title="@string/_25_30" />-->
     </group>
 </menu>
