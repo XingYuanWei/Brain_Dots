@@ -1,6 +1,9 @@
 package com.example.astronaut.brain_dots.View.gameShow;
 
 import android.annotation.SuppressLint;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
@@ -14,14 +17,15 @@ import android.view.SurfaceHolder;
 
 import com.example.astronaut.brain_dots.Activities.GameViewActivity;
 import com.example.astronaut.brain_dots.Domain.Creator;
+import com.example.astronaut.brain_dots.R;
 import com.example.astronaut.brain_dots.Shapes.common.Polygon;
 import com.example.astronaut.brain_dots.Shapes.rules.RigidBodyShapes;
 import com.example.astronaut.brain_dots.Shapes.special.WeldJointWithTwoBody;
+import com.example.astronaut.brain_dots.Utils.BitmapUtil;
 import com.example.astronaut.brain_dots.Utils.gameUtils.BackgroundMusicUtil;
 import com.example.astronaut.brain_dots.Utils.ColorUtil;
 import com.example.astronaut.brain_dots.Utils.Constant;
 import com.example.astronaut.brain_dots.Utils.MathUtil;
-import com.example.astronaut.brain_dots.Utils.gameUtils.GameContactListener;
 import com.example.astronaut.brain_dots.View.componentShow.SettingDialog;
 import com.example.astronaut.brain_dots.View.thread.RefreshFrameThread;
 
@@ -60,8 +64,8 @@ public class ShowGameSurfaceView extends GLSurfaceView implements SurfaceHolder.
     Paint paint;
     //刷帧线程
     RefreshFrameThread refreshThread;
-    //多线程是否已打开标记
-    boolean flag = false;
+    //Bitmap数组
+    public Bitmap[] obstacleBitmaps;
 
     public ShowGameSurfaceView(GameViewActivity activity) {
         super(activity);
@@ -76,6 +80,8 @@ public class ShowGameSurfaceView extends GLSurfaceView implements SurfaceHolder.
 
         //初始化画笔
         initPaint();
+        //初始化图片
+        initBitmap(this.getResources());
         /*
          * 动画线程的标志初始化为true,在红蓝两球相撞时被置为了false
          * 现在要重新设置为true
@@ -84,9 +90,6 @@ public class ShowGameSurfaceView extends GLSurfaceView implements SurfaceHolder.
         //同样的也要把游戏输赢状态重置,-1为输赢未知状态
         Constant.STATE = -1;
 
-        //添加碰撞监听器
-        GameContactListener contactListener = new GameContactListener(this);
-        activity.world.setContactListener(contactListener);
     }
 
     //初始化画笔
@@ -101,6 +104,13 @@ public class ShowGameSurfaceView extends GLSurfaceView implements SurfaceHolder.
         paintPath.setStrokeCap(Paint.Cap.ROUND);
     }
 
+    //初始化Bitmap数组
+    private void initBitmap(Resources resources) {
+        obstacleBitmaps = null;
+        obstacleBitmaps = new Bitmap[3];
+        obstacleBitmaps[0] = BitmapFactory.decodeResource(resources, R.drawable.web_obstacle);
+    }
+
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -112,6 +122,19 @@ public class ShowGameSurfaceView extends GLSurfaceView implements SurfaceHolder.
                 if (drawPath.path != null) {
                     canvas.drawPath(drawPath.path, drawPath.paint);
                 }
+            }
+        }
+    }
+
+    //画出网格阻碍物集合
+    private void drawWebObstacle(Canvas canvas) {
+        //如果放置网格阻碍物的集合不为空
+        if (activity.webCantTouchAreaList != null) {
+            //遍历集合并画出
+            for (WebCantTouchArea webCantTouchArea : activity.webCantTouchAreaList) {
+                //更改图片大小
+                Bitmap drawBitmap = BitmapUtil.resizeBitmap(webCantTouchArea.getWidth(), webCantTouchArea.getHeight(), obstacleBitmaps[0]);
+                webCantTouchArea.drawWebArea(canvas, drawBitmap, paint);
             }
         }
     }
@@ -155,6 +178,7 @@ public class ShowGameSurfaceView extends GLSurfaceView implements SurfaceHolder.
                 drawBackground(canvas);
                 drawBody(canvas);
                 onDraw(canvas);
+                drawWebObstacle(canvas);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -165,6 +189,26 @@ public class ShowGameSurfaceView extends GLSurfaceView implements SurfaceHolder.
         }
     }
 
+
+    private boolean isCantTouch(List<WebCantTouchArea> list, MotionEvent event) {
+        if (list == null) {
+            return false;
+        } else {
+            for (WebCantTouchArea webCantTouchArea : activity.webCantTouchAreaList) {
+                float touchX = event.getX();
+                float touchY = event.getY();
+                float areaWidth = webCantTouchArea.getStartX() + webCantTouchArea.getWidth();
+                float areaHeight = webCantTouchArea.getStartY() + webCantTouchArea.getHeight();
+                if (touchX > webCantTouchArea.getStartX() && touchX < areaWidth &&
+                        touchY > webCantTouchArea.getStartY() && touchY < areaHeight) {
+                    Log.e("Tag!!", "这里触摸无效!");
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -173,6 +217,10 @@ public class ShowGameSurfaceView extends GLSurfaceView implements SurfaceHolder.
             case MotionEvent.ACTION_DOWN:
                 Log.e("Tag!!", "onTouchEvent: " + Constant.DRAW_THREAD_FLAG);
                 if (!Constant.DRAW_THREAD_FLAG) {
+                    break;
+                }
+                //调用方法判断该触摸点区域是否为不可绘画区域
+                if (isCantTouch(activity.webCantTouchAreaList, event)) {
                     break;
                 }
                 //以下执行在界面上涂鸦的逻辑
@@ -198,6 +246,10 @@ public class ShowGameSurfaceView extends GLSurfaceView implements SurfaceHolder.
                 if (!Constant.DRAW_THREAD_FLAG) {
                     break;
                 }
+                //调用方法判断该触摸点区域是否为不可绘画区域
+                if (isCantTouch(activity.webCantTouchAreaList, event)) {
+                    break;
+                }
                 //涂鸦的逻辑代码
                 float moveX = event.getX();
                 float moveY = event.getY();
@@ -207,7 +259,9 @@ public class ShowGameSurfaceView extends GLSurfaceView implements SurfaceHolder.
                 //两点的距离
                 float distanceTwoPoint = MathUtil.getDistance(prePointX, prePointY, curryPointX, curryPointY);
                 //根据贝塞尔曲线画出运动的轨迹
-                path.quadTo(curryX, curryY, moveX, moveY);
+                if (path != null) {
+                    path.quadTo(curryX, curryY, moveX, moveY);
+                }
                 invalidate();
                 curryX = moveX;
                 curryY = moveY;
@@ -222,6 +276,11 @@ public class ShowGameSurfaceView extends GLSurfaceView implements SurfaceHolder.
                 if (!Constant.DRAW_THREAD_FLAG) {
                     break;
                 }
+                //调用方法判断该触摸点区域是否为不可绘画区域
+                if (isCantTouch(activity.webCantTouchAreaList, event)) {
+                    break;
+                }
+
                 //清空路径集合
                 drawPathList.clear();
                 //初始化画笔 使得手绘的路径痕迹消失
@@ -242,7 +301,7 @@ public class ShowGameSurfaceView extends GLSurfaceView implements SurfaceHolder.
                  * 集合不为空才能打开线程
                  *
                  */
-                if (!flag && !metaPolygonList.isEmpty()) {
+                if (!metaPolygonList.isEmpty() && Constant.IS_NEW_THREAD) {
                     startGravityThread();
                 }
                 //调用方法先将所有手绘的元矩形全部焊接起来为一个整体
@@ -263,11 +322,13 @@ public class ShowGameSurfaceView extends GLSurfaceView implements SurfaceHolder.
      * 达到小球在运动的目的
      */
     private void startGravityThread() {
+        refreshThread = null;
+        System.gc();
         //开启线程
         refreshThread = new RefreshFrameThread(this);
         refreshThread.start();
         //是否已经打开线程的标记
-        flag = true;
+        Constant.IS_NEW_THREAD = false;
         Log.d("tag", "ShowGameSurfaceView: " + "start");
     }
 
@@ -318,6 +379,3 @@ public class ShowGameSurfaceView extends GLSurfaceView implements SurfaceHolder.
     }
 
 }
-
-
-
