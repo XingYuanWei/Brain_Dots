@@ -11,6 +11,8 @@ import android.widget.CompoundButton;
 import com.example.astronaut.brain_dots.R;
 import com.example.astronaut.brain_dots.Utils.gameUtils.BackgroundMusicUtil;
 
+import java.io.Serializable;
+
 
 /*
  *Created by 魏兴源 on 2018-08-26
@@ -22,7 +24,7 @@ import com.example.astronaut.brain_dots.Utils.gameUtils.BackgroundMusicUtil;
 /**
  * 自定义一个弹出对话框
  */
-public class SettingDialog extends Dialog {
+public class SettingDialog extends Dialog implements Serializable{
     public static boolean soundFlag = true;
     public static boolean soundEffectFlag = true;
 

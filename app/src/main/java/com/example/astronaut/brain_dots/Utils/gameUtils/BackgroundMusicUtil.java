@@ -14,9 +14,10 @@ import android.media.SoundPool;
 
 import com.example.astronaut.brain_dots.R;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
-public class BackgroundMusicUtil {
+public class BackgroundMusicUtil implements Serializable{
     //背景音乐
     private static MediaPlayer backgroundMusic;
     //声音池

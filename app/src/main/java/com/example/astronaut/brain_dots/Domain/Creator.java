@@ -19,6 +19,7 @@ import com.example.astronaut.brain_dots.Shapes.common.Rectangle;
 import com.example.astronaut.brain_dots.Utils.ColorUtil;
 import com.example.astronaut.brain_dots.Utils.Constant;
 import com.example.astronaut.brain_dots.Utils.MathUtil;
+import com.example.astronaut.brain_dots.View.gameShow.WebCantTouchArea;
 
 import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.collision.shapes.EdgeShape;
@@ -202,7 +203,7 @@ public class Creator {
         circle.m_radius = radius / Constant.RATE;
         //刚体的物理性质描述
         FixtureDef fixtureDef = new FixtureDef();
-        fixtureDef.density = 200.0f;
+        fixtureDef.density = 2000.0f;
         fixtureDef.friction = 0.1f;
         fixtureDef.restitution = 0.1f;
         fixtureDef.shape = circle;
@@ -285,9 +286,18 @@ public class Creator {
         return new Polygon(rigidBody, positions, color);
     }
 
-
+    //根据一个具有矩形四个坐标的数组创建出一个矩形,这个方法适用于手指滑动绘制线条
     public static Polygon createPolygon(float[][] position, World world) {
         return Creator.createPolygon(0, 0, position, false, world, ColorUtil.getCreateBodyColor(), 0);
     }
 
+    //创建矩形
+    public static Polygon createReact(float[][] position,World world){
+        return Creator.createPolygon(0,0,position,true,world,ColorUtil.getStaticBodyColor(),0);
+    }
+
+    //创建不能手绘制出线条的区域
+    public static WebCantTouchArea createCantTouchArea(float startX, float startY, float width, float height) {
+        return new WebCantTouchArea(startX, startY, width, height);
+    }
 }

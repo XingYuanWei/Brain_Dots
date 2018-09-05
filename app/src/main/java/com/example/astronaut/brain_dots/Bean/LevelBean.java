@@ -6,18 +6,36 @@ package com.example.astronaut.brain_dots.Bean;
  *
  */
 
+
+import org.litepal.crud.DataSupport;
+
 import java.io.Serializable;
 
-public class LevelBean implements Serializable{
+public class LevelBean extends DataSupport implements Serializable {
     private String levelID;
     private int levelImage;
     private String levelName;
+    //这个关卡是否已经解锁
+    private boolean isLocked;
+    //下一关地图文件的名称
+    private String nextLevelMapName;
 
-    public LevelBean(String levelID, int levelImage, String levelName) {
+    public LevelBean(String levelID, int levelImage, String levelName, boolean isLocked) {
         this.levelID = levelID;
         this.levelImage = levelImage;
         this.levelName = levelName;
+        this.isLocked = isLocked;
     }
+
+
+    public boolean isLocked() {
+        return isLocked;
+    }
+
+    public void setLocked(boolean locked) {
+        isLocked = locked;
+    }
+
 
     public String getLevelID() {
         return levelID;

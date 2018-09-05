@@ -28,6 +28,8 @@ public class ReadFilesUtil {
             String line;
             while ((line = reader.readLine()) != null){
                 stringBuilder.append(line);
+                //打印提示正在读取数据
+                Log.e("Tag!!", "getContentByAsset: "+"Reading Now" );
             }
         } catch (IOException e) {
             e.printStackTrace();

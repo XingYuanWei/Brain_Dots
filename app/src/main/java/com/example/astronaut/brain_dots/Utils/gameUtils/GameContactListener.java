@@ -3,6 +3,7 @@ package com.example.astronaut.brain_dots.Utils.gameUtils;
 
 import android.util.Log;
 
+import com.example.astronaut.brain_dots.Activities.GameViewActivity;
 import com.example.astronaut.brain_dots.Utils.Constant;
 import com.example.astronaut.brain_dots.View.componentShow.SettingDialog;
 import com.example.astronaut.brain_dots.View.gameShow.ShowGameSurfaceView;
@@ -22,16 +23,18 @@ import org.jbox2d.dynamics.contacts.Contact;
 
 public class GameContactListener implements ContactListener {
     private ShowGameSurfaceView gameView;
+    private GameViewActivity activity;
 
-    public GameContactListener(ShowGameSurfaceView gameView) {
+    public GameContactListener(GameViewActivity gameActivity) {
         this.gameView = gameView;
+        this.activity = gameActivity;
     }
 
     @Override
     public void beginContact(Contact contact) {
         //用物理引擎里的方法判断是否为两个小球碰撞
         boolean isBallContact = contact instanceof CircleContact;
-        Log.e("Tag!!", "beginContact: " + contact );
+        Log.e("Tag!!", "beginContact: " + contact);
         if (isBallContact) {
             Log.e("Tag!!", "beginContact: " + "碰到啦！！！");
             //游戏属于标志置为1
@@ -50,7 +53,7 @@ public class GameContactListener implements ContactListener {
             //判断是否开启了音效
             if (SettingDialog.soundEffectFlag) {
                 BackgroundMusicUtil.playSound(1, 1);
-                Log.e("Tag!!", "beginContact: " + "1111111111");
+                Log.e("Tag!!", "beginContact: " + "放音乐啦！");
             }
             //画面停止2.5s之后,发送消息到Handler切换页面
             try {
@@ -63,7 +66,13 @@ public class GameContactListener implements ContactListener {
                 BackgroundMusicUtil.playBackGroundMusic(true);
             }
             //发送消息把界面切换到胜利的界面
-            gameView.activity.mainHandler.sendEmptyMessage(Constant.HANDLER_MSG_PASS);
+            activity.mainHandler.sendEmptyMessage(Constant.HANDLER_MSG_PASS);
+            int gold_num = activity.moneyBean.getMoneyNum() + 8;
+            //金钱加8,并更新金币数量
+            activity.moneyBean.setMoneyNum(gold_num);
+            activity.moneyBean.save();
+            Log.e("Tag!!", "涨钱啦！" + activity.moneyBean.getMoneyNum());
+
         }
     }
 

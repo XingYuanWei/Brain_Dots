@@ -60,7 +60,7 @@ public class Ball extends RigidBodyShapes {
         //获取现实世界里刚体的坐标
         float x = rigidBody.getPosition().x * Constant.RATE;
         float y = rigidBody.getPosition().y * Constant.RATE;
-        Log.e("Tag!!", "drawBodySelf: " + "X:" + x + "Y:" + y);
+//        Log.e("Tag!!", "drawBodySelf: " + "X:" + x + "Y:" + y);
         /*
          * 如果此时x坐标或y坐标大于了竖屏时的宽和高,或x小于0,重力向下(y不会小于0)
          * 则把模拟线程停止(即把DRAW_THREAD_FLAGd置为false)

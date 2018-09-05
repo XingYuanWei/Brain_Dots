@@ -6,13 +6,19 @@ package com.example.astronaut.brain_dots.Utils.gameUtils;
  *
  */
 
+import android.util.Log;
+
 import com.example.astronaut.brain_dots.Activities.GameViewActivity;
+import com.example.astronaut.brain_dots.Bean.LevelBean;
 import com.example.astronaut.brain_dots.Domain.Creator;
 import com.example.astronaut.brain_dots.Shapes.common.Ball;
+import com.example.astronaut.brain_dots.Shapes.common.Polygon;
 import com.example.astronaut.brain_dots.Shapes.common.Rectangle;
 import com.example.astronaut.brain_dots.Utils.ColorUtil;
 import com.example.astronaut.brain_dots.Utils.Constant;
+import com.example.astronaut.brain_dots.Utils.MathUtil;
 import com.example.astronaut.brain_dots.Utils.ReadFilesUtil;
+import com.example.astronaut.brain_dots.View.gameShow.WebCantTouchArea;
 
 
 import java.util.ArrayList;
@@ -65,6 +71,22 @@ public class MapUtil {
         }
     }
 
+    //根据当前的ID获取下一关数据文件的名称
+    public static String getNextMapName(String curryMapDataID) {
+        int curryLevelNum;
+        try {
+            curryLevelNum = Integer.valueOf(curryMapDataID);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.e("Tag!!", "格式化异常!");
+            return null;
+        }
+        int nextLevelNum = curryLevelNum + 1;
+        return "Level/level" + nextLevelNum + ".map";
+    }
+
+
     private static void setBodyInGameView(List<String> list) {
         String bodyName = list.get(0);
         //图形的起始位置
@@ -76,7 +98,6 @@ public class MapUtil {
 
         if (posX <= 10) {
             posX = 0;
-
         }
         if (Constant.SCREEN_WIDTH - posY <= 50) {
             posY = Constant.SCREEN_WIDTH;
@@ -87,15 +108,11 @@ public class MapUtil {
                 Ball redBall = Creator.createBall(posX + 100f, posY + 100f, 45f, false, activity.world,
                         ColorUtil.getRedBallColor(), activity);
                 activity.shapesList.add(redBall);
-                //添加到只存放小球的集合
-                activity.ballList.add(redBall);
                 break;
             case "blueBall":
                 Ball blueBall = Creator.createBall(posX + 100f, posY + 100f, 45f, false, activity.world,
                         ColorUtil.getBlueBallColor(), activity);
                 activity.shapesList.add(blueBall);
-                //添加到只存放小球的集合
-                activity.ballList.add(blueBall);
                 break;
             case "one1":
                 Ball staticBall = Creator.createBall(posX, posY, bodyWidth, false, activity.world,
@@ -103,21 +120,26 @@ public class MapUtil {
                 activity.shapesList.add(staticBall);
                 break;
             case "one2":
-                Rectangle rectangleHorizontal = Creator.createRectangle(bodyWidth / 2, posY, bodyWidth / 2, bodyHeight / 2,
-                        true, activity.world, ColorUtil.getStaticBodyColor());
-                activity.shapesList.add(rectangleHorizontal);
+                Polygon polygon = Creator.createReact(MathUtil.getPositionByStartPointWidthHeight(posX, posY, bodyWidth, bodyHeight), activity.world);
+                activity.shapesList.add(polygon);
+
                 break;
             case "one3":
                 Rectangle rectangleVertical = Creator.createRectangle(posX, bodyHeight / 2, bodyWidth / 2, bodyHeight / 2,
                         true, activity.world, ColorUtil.getStaticBodyColor());
                 activity.shapesList.add(rectangleVertical);
+
                 break;
             case "one4":
-                Rectangle square = Creator.createRectangle(posX + bodyWidth / 2, posY + bodyHeight / 2 + 50, bodyWidth / 2, bodyHeight / 2,
-                        true, activity.world, ColorUtil.getStaticBodyColor());
+                Polygon square = Creator.createReact(MathUtil.getPositionByStartPointWidthHeight(posX, posY, bodyWidth, bodyHeight), activity.world);
                 activity.shapesList.add(square);
             case "one5":
 //                Triangle triangle = Creator.
+                break;
+            case "three3":
+                WebCantTouchArea webCantTouchArea = Creator.createCantTouchArea(posX, posY, bodyWidth, bodyHeight);
+                activity.webCantTouchAreaList.add(webCantTouchArea);
+                break;
         }
 
     }

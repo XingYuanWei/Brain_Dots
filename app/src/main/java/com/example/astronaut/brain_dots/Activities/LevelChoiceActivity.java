@@ -178,7 +178,6 @@ public class LevelChoiceActivity extends AppCompatActivity {
                         String add_new_gold_num = moneyDAO.getMoneyBean().getMoneyNum() + "";
                         goldNumTextView.setText(add_new_gold_num);
                         break;
-
                 }
             }
         };

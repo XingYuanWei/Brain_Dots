@@ -20,7 +20,6 @@ import android.view.WindowManager;
 
 import com.example.astronaut.brain_dots.Bean.LevelBean;
 import com.example.astronaut.brain_dots.Bean.MoneyBean;
-import com.example.astronaut.brain_dots.DAO.MoneyDAO;
 import com.example.astronaut.brain_dots.R;
 import com.example.astronaut.brain_dots.Shapes.common.Ball;
 import com.example.astronaut.brain_dots.Shapes.rules.RigidBodyShapes;
@@ -30,12 +29,12 @@ import com.example.astronaut.brain_dots.Utils.gameUtils.GameContactListener;
 import com.example.astronaut.brain_dots.Utils.gameUtils.MapUtil;
 import com.example.astronaut.brain_dots.View.componentShow.GifSurfaceView;
 import com.example.astronaut.brain_dots.View.gameShow.ShowGameSurfaceView;
+import com.example.astronaut.brain_dots.View.gameShow.WebCantTouchArea;
 import com.example.astronaut.brain_dots.View.thread.GarbageThread;
 
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.World;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,6 +54,9 @@ public class GameViewActivity extends AppCompatActivity {
     public List<RigidBodyShapes> shapesList = new ArrayList<>();
     //只存放红蓝两个小球的集合
     public List<Ball> ballList = new ArrayList<>();
+    //存放 不能手滑动绘制创造线条的矩形区域 抽象对象
+    public List<WebCantTouchArea> webCantTouchAreaList = new ArrayList<>();
+
     //回收超出屏幕范围外刚体的线程
     GarbageThread garbageThread;
     //存储图片
@@ -126,7 +128,7 @@ public class GameViewActivity extends AppCompatActivity {
         String fileName = "Level/" + levelInfo.getLevelName() + ".map";
         Log.e("Tag!!", "onCreate: " + fileName);
         //在地图上放置所有游戏组件
-        MapUtil.setLevel(this, fileName, levelInfo);
+        MapUtil.setLevel(this, fileName);
 
         //垃圾回收线程
         garbageThread = new GarbageThread(this);
@@ -160,8 +162,9 @@ public class GameViewActivity extends AppCompatActivity {
 //                        shapesList = new ArrayList<>();
                         world = new World(new Vec2(0, 10f));
                         Constant.IS_NEW_THREAD = true;
+                        String fileName2 = levelInfo.getLevelName();
                         //初始化地图
-                        MapUtil.setLevel(GameViewActivity.this, Constant.NEXT_LEVEL_PATH, levelInfo);
+                        MapUtil.setLevel(GameViewActivity.this, fileName2);
                         gameView = new ShowGameSurfaceView(GameViewActivity.this);
                         GameViewActivity.this.setContentView(gameView);
                         break;
@@ -188,8 +191,9 @@ public class GameViewActivity extends AppCompatActivity {
                         world.setContactListener(contactListener);
                         //线程是否为新线程IS_NEW_THREAD设为true
                         Constant.IS_NEW_THREAD = true;
+                        String fileName = "Level\\" + levelInfo.getLevelName() + ".map";
                         //初始化地图
-                        MapUtil.setLevel(GameViewActivity.this, Constant.CURRENT_LEVEL_PATH, levelInfo);
+                        MapUtil.setLevel(GameViewActivity.this, fileName);
                         gameView = new ShowGameSurfaceView(GameViewActivity.this);
                         GameViewActivity.this.setContentView(gameView);
                 }
