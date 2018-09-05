@@ -43,6 +43,17 @@ public class MathUtil {
         return position;
     }
 
+    public static float[][] getPositionByStartPointWidthHeight(float startX,float startY,float width,float height){
+        float secondX = startX + width;
+        float secondY = startY;
+        float thirdX = startX + width;
+        float thirdY = startY + height;
+        float fourthX = startX;
+        float fourthY = startY + height;
+        return new float[][]{{startX,startY},{secondX,secondY},{thirdX,thirdY},{fourthX,fourthY}};
+    }
+
+    //此方法用于在手指滑动过程中通过滑动的两点和距离计算出所对应的矩形的其他两个点的坐标,并生成一个数组
     public static float[][] getRectPositionsByTwoPoint(float pointOneX, float pointOneY, float pointTwoX, float pointTwoY, float distance) {
         float dx = pointTwoX - pointOneX;
         float dy = pointTwoY - pointOneY;
