@@ -15,7 +15,7 @@ import android.graphics.Matrix;
  */
 public class BitmapUtil {
 
-    public Bitmap resizeBitmap(float newWidth, float newHeight, Bitmap bitmap) {
+    public static Bitmap resizeBitmap(float newWidth, float newHeight, Bitmap bitmap) {
         Matrix matrix = new Matrix();
         matrix.postScale(newWidth / bitmap.getWidth(), newHeight / bitmap.getHeight());
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
